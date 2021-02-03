@@ -27,4 +27,9 @@ public class UsuarioDao {
 		em.remove(usuario);
 	}
 
+	/*
+	 * Essa classe UsuarioDao não tem INSERT e UPDATE. Provavelmente os usuários dessa aplicação são
+	 * cadastrados em outros sistema externo, por uma API, ou inserido diretamente em um banco de dados, etc.
+	 */
+
 }
