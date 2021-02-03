@@ -3,6 +3,8 @@ package br.com.alura.leilao.dao;
 import br.com.alura.leilao.model.Leilao;
 import br.com.alura.leilao.model.Usuario;
 import br.com.alura.leilao.util.JPAUtil;
+import br.com.alura.leilao.util.builder.LeilaoBuilder;
+import br.com.alura.leilao.util.builder.UsuarioBuilder;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,11 +32,21 @@ class LeilaoDaoTest {
         em.getTransaction().rollback();
     }
 
-
     @Test
     void deveriaCadastrarUmLeilao() {
-        Usuario usuario = criarUsuario();
-        Leilao leilao = new Leilao("Mochila", new BigDecimal("70"), LocalDate.now(), usuario);
+        Usuario usuario = new UsuarioBuilder()
+                    .comNome("Fulano")
+                    .comEmail("fulano@email.com")
+                    .comSenha("12345678")
+                    .build();
+        em.persist(usuario);
+
+        Leilao leilao = new LeilaoBuilder()
+                .comNome("Mochila")
+                .comValorInicial("500")
+                .comData(LocalDate.now())
+                .comUsuario(usuario)
+                .build();
 
         leilao = dao.salvar(leilao);
 
@@ -42,10 +54,22 @@ class LeilaoDaoTest {
         Assert.assertNotNull(leilaoSalvo);
     }
 
+
     @Test
     void deveriaAtualizarUmLeilao() {
-        Usuario usuario = criarUsuario();
-        Leilao leilao = new Leilao("Mochila", new BigDecimal("70"), LocalDate.now(), usuario);
+        Usuario usuario = new UsuarioBuilder()
+                .comNome("Fulano")
+                .comEmail("fulano@email.com")
+                .comSenha("12345678")
+                .build();
+        em.persist(usuario);
+
+        Leilao leilao = new LeilaoBuilder()
+                .comNome("Mochila")
+                .comValorInicial("500")
+                .comData(LocalDate.now())
+                .comUsuario(usuario)
+                .build();
 
         leilao = dao.salvar(leilao);
 
@@ -58,11 +82,4 @@ class LeilaoDaoTest {
         Assert.assertEquals("Celular", leilaoSalvo.getNome());
         Assert.assertEquals(new BigDecimal("400"), leilaoSalvo.getValorInicial());
     }
-
-    private Usuario criarUsuario() {
-        Usuario usuario = new Usuario("fulano", "fulano@email.com", "12345678");
-        em.persist(usuario);
-        return usuario;
-    }
-
 }
